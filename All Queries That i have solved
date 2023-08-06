@@ -1,0 +1,128 @@
+-- Question Set 1 - Easy
+
+-- Q1: Who is the senior most employee based on job title?
+SELECT title, last_name, first_name 
+FROM employee
+ORDER BY levels DESC
+LIMIT 1;
+
+-- Q2: Which countries have the most Invoices?
+SELECT COUNT(*) AS c, billing_country 
+FROM invoice
+GROUP BY billing_country
+ORDER BY c DESC;
+
+-- Q3: What are top 3 values of total invoice?
+SELECT total 
+FROM invoice
+ORDER BY total DESC
+LIMIT 3;
+
+-- Q4: Which city has the best customers?
+SELECT billing_city, SUM(total) AS InvoiceTotal
+FROM invoice
+GROUP BY billing_city
+ORDER BY InvoiceTotal DESC
+LIMIT 1;
+
+-- Q5: Who is the best customer?
+SELECT customer.customer_id, first_name, last_name, SUM(total) AS total_spending
+FROM customer
+JOIN invoice ON customer.customer_id = invoice.customer_id
+GROUP BY customer.customer_id
+ORDER BY total_spending DESC
+LIMIT 1;
+
+
+-- Question Set 2 - Moderate
+
+-- Q1: Write query to return the email, first name, last name, & Genre of all Rock Music listeners.
+SELECT DISTINCT email, first_name, last_name, genre.name AS genre
+FROM customer
+JOIN invoice ON customer.customer_id = invoice.customer_id
+JOIN invoiceline ON invoice.invoice_id = invoiceline.invoice_id
+JOIN track ON invoiceline.track_id = track.track_id
+JOIN genre ON track.genre_id = genre.genre_id
+WHERE genre.name = 'Rock'
+ORDER BY email;
+
+-- Q2: Let's invite the artists who have written the most rock music in our dataset.
+SELECT artist.artist_id, artist.name AS artist_name, COUNT(track.track_id) AS track_count
+FROM track
+JOIN album ON track.album_id = album.album_id
+JOIN artist ON album.artist_id = artist.artist_id
+JOIN genre ON track.genre_id = genre.genre_id
+WHERE genre.name = 'Rock'
+GROUP BY artist.artist_id, artist_name
+ORDER BY track_count DESC
+LIMIT 10;
+
+-- Q3: Return all the track names that have a song length longer than the average song length.
+SELECT name, milliseconds
+FROM track
+WHERE milliseconds > (SELECT AVG(milliseconds) FROM track)
+ORDER BY milliseconds DESC;
+
+
+-- Question Set 3 - Advanced
+
+-- Q1: Find how much amount spent by each customer on artists?
+WITH artist_sales AS (
+    SELECT a.artist_id, a.name AS artist_name, SUM(il.unit_price * il.quantity) AS total_sales
+    FROM artist a
+    JOIN album al ON a.artist_id = al.artist_id
+    JOIN track t ON al.album_id = t.album_id
+    JOIN invoiceline il ON t.track_id = il.track_id
+    GROUP BY a.artist_id, artist_name
+)
+SELECT c.first_name, c.last_name, c.country, asa.artist_name, asa.total_sales
+FROM customer c
+JOIN invoice i ON c.customer_id = i.customer_id
+JOIN invoiceline il ON i.invoice_id = il.invoice_id
+JOIN track t ON il.track_id = t.track_id
+JOIN album al ON t.album_id = al.album_id
+JOIN artist_sales asa ON al.artist_id = asa.artist_id
+GROUP BY c.first_name, c.last_name, c.country, asa.artist_name, asa.total_sales
+HAVING asa.total_sales = MAX(asa.total_sales)
+ORDER BY c.country;
+
+-- Q2: We want to find out the most popular music Genre for each country.
+WITH country_genre_counts AS (
+    SELECT c.country, g.name AS genre_name, COUNT(*) AS genre_count
+    FROM customer c
+    JOIN invoice i ON c.customer_id = i.customer_id
+    JOIN invoiceline il ON i.invoice_id = il.invoice_id
+    JOIN track t ON il.track_id = t.track_id
+    JOIN genre g ON t.genre_id = g.genre_id
+    GROUP BY c.country, genre_name
+),
+max_genre_per_country AS (
+    SELECT country, MAX(genre_count) AS max_genre_count
+    FROM country_genre_counts
+    GROUP BY country
+)
+SELECT cgc.country, cgc.genre_name
+FROM country_genre_counts cgc
+JOIN max_genre_per_country mgpc ON cgc.country = mgpc.country
+WHERE cgc.genre_count = mgpc.max_genre_count
+ORDER BY cgc.country;
+
+-- Q3: Write a query that determines the customer that has spent the most on music for each country.
+WITH country_top_spenders AS (
+    SELECT c.country, c.first_name, c.last_name, SUM(i.total) AS total_spent
+    FROM customer c
+    JOIN invoice i ON c.customer_id = i.customer_id
+    GROUP BY c.country, c.first_name, c.last_name
+),
+max_spend_per_country AS (
+    SELECT country, MAX(total_spent) AS max_spent
+    FROM country_top_spenders
+    GROUP BY country
+)
+SELECT cts.country, cts.first_name, cts.last_name, cts.total_spent
+FROM country_top_spenders cts
+JOIN max_spend_per_country mspc ON cts.country = mspc.country
+WHERE cts.total_spent = mspc.max_spent
+ORDER BY cts.country;
+
+-- Thank You :)
