@@ -1,88 +1,63 @@
-Create Database Music_Store;
+Project: Music Store Database
 
-CREATE TABLE employee(
-employee_id VARCHAR(50) PRIMARY KEY,
-last_name CHAR(50),
-first_name CHAR(50),
-title VARCHAR(50),
-reports_to VARCHAR(30),
-levels VARCHAR(10),
-birthdate TIMESTAMP,
-hire_date TIMESTAMP,
-address VARCHAR(120),
-city VARCHAR(50),
-state VARCHAR(50),
-country VARCHAR(30),
-postal_code VARCHAR(30),
-phone VARCHAR(30),
-fax VARCHAR(30),
-email VARCHAR(30));
+Objective: Design and implement a SQL database for a music store, allowing users to manage artists, albums, tracks, and customer orders.
 
-CREATE TABLE customer(
-customer_id VARCHAR(30) PRIMARY KEY,
-first_name CHAR(30),
-last_name CHAR(30),
-company VARCHAR(30),
-address VARCHAR(30),
-city VARCHAR(30),
-state VARCHAR(30),
-country VARCHAR(30),
-postal_code INT8,
-phone INT,
-fax INT,
-email VARCHAR(30),
-support_rep_id VARCHAR(30));
+Database Schema:
 
-CREATE TABLE invoice(
-invoice_id VARCHAR(30) PRIMARY KEY,
-customer_id VARCHAR(30),
-invoice_date TIMESTAMP,
-billing_address VARCHAR(120),
-billing_city VARCHAR(30),
-billing_state VARCHAR(30),
-billing_country VARCHAR(30),
-billing_postal VARCHAR(30),
-total FLOAT8);
+Artists
 
-CREATE TABLE invoice_line(
-invoice_line_id VARCHAR(50) PRIMARY KEY,
-invoice_id VARCHAR(30),
-track_id VARCHAR(30),
-unit_price VARCHAR(30),
-quantity VARCHAR(30));
+artist_id (Primary Key)
+artist_name
+genre
+Albums
 
-CREATE TABLE track(
-track_id VARCHAR(50) PRIMARY KEY,
-name VARCHAR(30),
-album_id VARCHAR(30),
-media_type_id VARCHAR(30),
-genre_id VARCHAR(30),
-composer VARCHAR(30),
-milliseconds TIMESTAMP,
-bytes INT8,
-unit_price INT16);
+album_id (Primary Key)
+album_title
+artist_id (Foreign Key referencing Artists)
+release_year
+Tracks
 
-CREATE TABLE playlist(
-playlist_id VARCHAR(50) PRIMARY KEY,
-name  VARCHAR(30));
+track_id (Primary Key)
+track_title
+album_id (Foreign Key referencing Albums)
+duration
+price
+Customers
 
-CREATE TABLE playlist_track(
-playlist_id VARCHAR(50) PRIMARY KEY,
-track_id VARCHAR(50) PRIMARY KEY);
+customer_id (Primary Key)
+first_name
+last_name
+email
+phone
+Orders
 
-CREATE TABLE artist(
-artist_id VARCHAR(50) PRIMARY KEY,
-name  VARCHAR(30)); 
+order_id (Primary Key)
+customer_id (Foreign Key referencing Customers)
+order_date
+Order_Details
 
-CREATE TABLE album(
-album_id VARCHAR(50) PRIMARY KEY,
-title  VARCHAR(30),
-artist_id  VARCHAR(30));
+order_detail_id (Primary Key)
+order_id (Foreign Key referencing Orders)
+track_id (Foreign Key referencing Tracks)
+quantity
+Queries:
 
-CREATE TABLE media_type(
-media_type_id VARCHAR(50) PRIMARY KEY,
-name VARCHAR(30));
+Question Set 1 - Easy:
 
-CREATE TABLE genre(
-genre_id VARCHAR(50) PRIMARY KEY,
-name VARCHAR(30));
+Who is the senior most employee based on job title?
+Which countries have the most Invoices?
+What are the top 3 values of total invoice?
+Which city has the best customers?
+Who is the best customer?
+Question Set 2 - Moderate:
+
+Return the email, first name, last name, & Genre of all Rock Music listeners.
+Find the top 10 rock bands and their total track count.
+Return track names with a song length longer than the average song length.
+Question Set 3 - Advanced:
+
+Find how much amount spent by each customer on artists.
+Determine the most popular music genre for each country.
+Find the customer that has spent the most on music for each country.
+Conclusion:
+Now, let's add a fun and random aspect to your project's conclusion. You can generate a random recommendation for a track to a customer based on their past orders and preferred genre. Here's a simplified SQL query to achieve this:
