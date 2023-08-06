@@ -1,0 +1,20 @@
+**Objective: Music Store Database Analysis**
+
+**Project Description:** In this project, I have utilized SQL queries to analyze a music store database. The database contains information about artists, albums, tracks, customers, and invoices. By applying SQL queries to this dataset, I have extracted valuable insights related to sales, customer behavior, popular genres, top customers, and more.
+
+**Tasks:**
+
+1. Identified the senior most employee based on job title.
+2. Determined the countries with the most invoices.
+3. Found the top three values of total invoices.
+4. Identified the city with the highest sum of invoice totals for a potential music festival.
+5. Discovered the best customer who has spent the most money.
+6. Retrieved email, first name, last name, and genre of Rock Music listeners.
+7. Found the top 10 rock bands with the most tracks.
+8. Listed track names with a song length longer than the average.
+9. Calculated the amount spent by each customer on artists.
+10. Determined the most popular music genre for each country.
+11. Found the customer that has spent the most on music for each country.
+
+**Conclusion:**
+Through this project, I gained hands-on experience in querying a music store database using SQL. I learned how to extract meaningful insights from the data, analyze customer behavior, identify top genres and artists, and make data-driven decisions to enhance the music store's offerings and promotions.
